@@ -1,0 +1,9 @@
+func main
+    n = .read
+    i = null
+    s = null
+    iter != i n
+        s = + s .read
+    stop
+    .post s
+stop

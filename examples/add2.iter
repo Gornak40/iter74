@@ -1,0 +1,86 @@
+func add a b
+	func = + a b
+stop
+
+
+func Iota A n
+	i = null
+	I = A
+	iter < i n
+		I <- i
+		i = ++ i
+		I = ++ I
+	stop
+	func = A
+stop
+
+
+func max a b
+	once < a b
+		func = b
+	pass true
+		func = a
+	stop
+stop
+
+
+func ReadA n
+	A = .heap n
+	i = null
+	iter < i n
+		I = + A i
+		I <- .read
+		i = ++ i
+	stop
+	func = A
+stop
+
+
+func make_pair a b
+	P = .heap 2
+	P <- a
+	I = ++ P
+	I <- b
+	func = P
+stop
+
+
+func accumulate A n
+	sum = null
+	i = A
+	iter < i n
+		sum = + sum [] + A i
+		i = ++ i
+	stop
+	func = sum
+stop
+
+
+func factor n
+	once == n 1
+		func = null
+		halt true
+	pass == n 2
+		func = true
+		halt true
+	pass == % n 2 null
+		func = null
+		halt true
+	stop
+	k = 3
+	iter
+		once >= * k k n
+			halt null
+		pass == % n k null
+			func = null
+			halt true
+		stop
+		k = + k 2
+	stop
+	func = true
+stop
+
+
+func main
+	null = .post .add .read .read
+stop

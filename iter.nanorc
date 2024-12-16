@@ -1,0 +1,24 @@
+## Syntax highlighting for Iter74.
+
+## Original author:  Alexander Gornak
+## License:  CC0 (public domain)
+
+syntax iter "\.iter$"
+comment "#"
+
+# Pointers
+color cyan "\<[A-Z]\w*\>"
+
+# Functions
+color magenta "[[:blank:]]\.[A-Za-z0-9_]+"
+
+# Keywords
+color green "\<(func|iter|halt|once|pass|stop)\>"
+
+# Literals
+color red "\<(null|true)\>"
+color brightred "\<0\>"
+
+# Expressions
+color brightyellow "[[:blank:]](=|<-)[[:blank:]]"
+color brown "[[:blank:]](\[\]|@)[[:blank:]]"

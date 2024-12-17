@@ -12,6 +12,6 @@ int main(int argc, char* argv[]) {
 	char* source = read_file(argv[1]);
 	token_t* result = tokenize(source);
 
-	free(source);
 	free(result);
+	free(source);
 }

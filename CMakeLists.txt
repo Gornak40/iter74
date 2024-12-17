@@ -11,7 +11,7 @@ file(GLOB SOURCES src/*.c)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 
-target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined -g -O1)
-target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
+target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined,leak -g -O1)
+target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined,leak)
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)

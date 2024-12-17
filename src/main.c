@@ -10,8 +10,9 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 	char* source = read_file(argv[1]);
-	token_t* result = tokenize(source);
+	tokenizer_t* t = tokenizer_new();
+	tokenizer_feed(t, source);
 
-	free(result);
+	tokenizer_free(t);
 	free(source);
 }

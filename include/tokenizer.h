@@ -1,5 +1,6 @@
 #pragma once
 
+#include <regex.h>
 typedef enum {
 	kFunc,	// func (function declaration)
 	kStop,	// stop (})
@@ -37,7 +38,20 @@ typedef struct {
 
 void debug_token(const token_t* t, const char* s);
 
-token_t parse_token(const char* stoken);
+typedef struct {
+	int len;
+	int cap;
+	token_t* tokens;
+	regex_t reg_id;
+	regex_t reg_pid;
+	regex_t reg_tid;
+} tokenizer_t;
+
+tokenizer_t* tokenizer_new();
 
 // Lifetime of source must be longer than result's.
-token_t* tokenize(char* source);
+void tokenizer_feed(tokenizer_t* t, char* source);
+
+token_t tokenizer_token(tokenizer_t* t, const char* stoken);
+
+void tokenizer_free(tokenizer_t* t);

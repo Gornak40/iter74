@@ -83,4 +83,5 @@ stop
 
 func main
 	null = .post .add .read .read
+	A = .ReadA
 stop

@@ -1,0 +1,10 @@
+## Syntax highlighting for .sunc Iter74.
+
+## Original author:  Alexander Gornak
+## License:  CC0 (public domain)
+
+syntax iter "\.sunc$"
+comment "#"
+
+# Keywords
+color green "\<(sunc|core|stop)\>"

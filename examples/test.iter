@@ -54,23 +54,23 @@ func AFill n x
 stop
 
 
-type ipair
+type Ipair
 	x y
 stop
 
 
-func ipair_New x y
-	ipair_R = .Heap 2
-	X = ipair@x ipair_R
-	Y = ipair@y ipair_R
+func Ipair_New x y
+	Ipair_R = .Heap 2
+	X = Ipair@x Ipair_R
+	Y = Ipair@y Ipair_R
 	X <- x
 	Y <- y
-	func = ipair_R
+	func = Ipair_R
 stop
 
 
-func sumIpair ipair_P
-	func = + ipair:x ipair_P ipair:y ipair_P
+func sumIpair Ipair_P
+	func = + Ipair:x Ipair_P Ipair:y Ipair_P
 stop
 
 

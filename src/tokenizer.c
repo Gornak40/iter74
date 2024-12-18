@@ -81,29 +81,29 @@ token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
 	}
 	{  // identifier and function call
 		if (!regexec(&t->reg_id, stoken, 0, NULL, 0)) {
-			return (token_t){.type = kId, .str = stoken};
+			return (token_t){.type = kId, .str = strdup(stoken)};
 		}
 		if (*stoken == '.' && !regexec(&t->reg_id, stoken + 1, 0, NULL, 0)) {
-			return (token_t){.type = kCall, .str = stoken + 1};
+			return (token_t){.type = kCall, .str = strdup(stoken + 1)};
 		}
 	}
 	{  // pointer identifier and pointer function call
 		if (!regexec(&t->reg_pid, stoken, 0, NULL, 0)) {
-			return (token_t){.type = kPId, .str = stoken};
+			return (token_t){.type = kPId, .str = strdup(stoken)};
 		}
 		if (*stoken == '.' && !regexec(&t->reg_pid, stoken + 1, 0, NULL, 0)) {
-			return (token_t){.type = kPCall, .str = stoken + 1};
+			return (token_t){.type = kPCall, .str = strdup(stoken + 1)};
 		}
 	}
 	{  // typed identifier and typed function call
 		if (!regexec(&t->reg_tid, stoken, 0, NULL, 0)) {
-			return (token_t){.type = kTId, .str = stoken};
+			return (token_t){.type = kTId, .str = strdup(stoken)};
 		}
 		if (*stoken == '.' && !regexec(&t->reg_tid, stoken + 1, 0, NULL, 0)) {
-			return (token_t){.type = kTCall, .str = stoken + 1};
+			return (token_t){.type = kTCall, .str = strdup(stoken + 1)};
 		}
 	}
-	return (token_t){.type = kSunc, .str = stoken};
+	return (token_t){.type = kSunc, .str = strdup(stoken)};
 }
 
 tokenizer_t* tokenizer_new() {
@@ -123,25 +123,25 @@ tokenizer_t* tokenizer_new() {
 	return t;
 }
 
-void tokenizer_feed(tokenizer_t* t, char* source) {
+void tokenizer_feed(tokenizer_t* t, const char* source) {
 	const char* itl = source;
-	char* itr = source;
+	const char* itr = source;
 	for (;;) {
 		if (*itr != '\0' && !isspace(*itr)) {  // normal symbol
 			++itr;
 			continue;
 		}
-		int brk = *itr == '\0';
 		if (itl != itr) {  // non empty token
-			*itr = '\0';
-			token_t token = tokenizer_token(t, itl);
+			char* tok = strndup(itl, itr - itl);
+			token_t token = tokenizer_token(t, tok);
 			if (t->len == t->cap) {
 				t->tokens = realloc(t->tokens, (t->cap <<= 1) * sizeof(*t->tokens));
 			}
 			t->tokens[t->len++] = token;
-			debug_token(&token, itl);
+			debug_token(&token, tok);
+			free(tok);
 		}
-		if (brk) {
+		if (*itr == '\0') {
 			break;
 		}
 		itl = ++itr;
@@ -149,6 +149,21 @@ void tokenizer_feed(tokenizer_t* t, char* source) {
 }
 
 void tokenizer_free(tokenizer_t* t) {
+	for (token_t* it = t->tokens; it != t->tokens + t->len; ++it) {
+		switch (it->type) {
+			case kId:
+			case kPId:
+			case kTId:
+			case kCall:
+			case kPCall:
+			case kTCall:
+			case kSunc:
+				free(it->str);
+				break;
+			default:
+				break;
+		}
+	}
 	free(t->tokens);
 	regfree(&t->reg_id);
 	regfree(&t->reg_pid);

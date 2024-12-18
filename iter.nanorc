@@ -7,10 +7,11 @@ syntax iter "\.iter$"
 comment "#"
 
 # Pointers
-color cyan "\<[A-Z]\w*\>"
+color cyan "\<[A-Z][a-zA-Z0-9]*\>"
+color yellow "[[:blank:]][A-Z][a-zA-Z0-9]*_[A-Z][a-zA-Z0-9]*"
 
 # Functions
-color magenta "[[:blank:]]\.[A-Za-z0-9_]+"
+color magenta "[[:blank:]]\.[a-zA-Z0-9]+"
 
 # Keywords
 color green "\<(func|iter|halt|once|pass|stop|type)\>"

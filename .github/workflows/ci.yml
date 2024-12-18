@@ -1,0 +1,31 @@
+name: Iter74 CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Enviroment
+        run: |
+          sudo apt update
+          sudo apt install -y cmake gcc make
+
+      - name: Build
+        run: |
+          cmake -B build
+          cmake --build build
+
+      - name: Test
+        run: |
+          cd build
+          ctest --output-on-failure

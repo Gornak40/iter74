@@ -9,7 +9,8 @@
 #include "utils.h"
 
 void debug_token(const token_t* t, const char* s) {
-	fprintf(stderr, "DBG(token): %s [%d]:", s, t->type);
+	fprintf(stderr, "DBG(token): %s (%d:%d) [%d]:", s, t->b_off,
+			t->b_off + (int)strlen(s), t->type);
 	switch (t->type) {
 		case kNum:
 			fprintf(stderr, " %lld\n", t->num);
@@ -134,6 +135,7 @@ void tokenizer_feed(tokenizer_t* t, const char* source) {
 		if (itl != itr) {  // non empty token
 			char* tok = strndup(itl, itr - itl);
 			token_t token = tokenizer_token(t, tok);
+			token.b_off = itl - source;
 			if (t->len == t->cap) {
 				t->tokens = realloc(t->tokens, (t->cap <<= 1) * sizeof(*t->tokens));
 			}

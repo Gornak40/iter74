@@ -2,4 +2,4 @@ BasedOnStyle: Google
 UseTab: Always
 IndentWidth: 4
 TabWidth: 4
-ColumnLimit: 120
+ColumnLimit: 90

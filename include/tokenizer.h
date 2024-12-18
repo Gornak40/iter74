@@ -32,6 +32,7 @@ typedef enum {
 
 typedef struct {
 	token_typ_t type;
+	int b_off;	// byte offset
 	union {
 		long long num;
 		char* str;

@@ -17,7 +17,8 @@ jobs:
 
       - name: Enviroment
         run: |
-          sudo apt update
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt update -y
           sudo apt install -y cmake gcc make
 
       - name: Build

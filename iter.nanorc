@@ -13,7 +13,7 @@ color cyan "\<[A-Z]\w*\>"
 color magenta "[[:blank:]]\.[A-Za-z0-9_]+"
 
 # Keywords
-color green "\<(func|iter|halt|once|pass|stop)\>"
+color green "\<(func|iter|halt|once|pass|stop|type)\>"
 
 # Literals
 color red "\<(null|true)\>"

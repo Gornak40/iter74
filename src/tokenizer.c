@@ -61,6 +61,9 @@ token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
 			if (!strcmp(stoken, "pass")) {
 				return (token_t){.type = kPass};
 			}
+			if (!strcmp(stoken, "type")) {
+				return (token_t){.type = kType};
+			}
 			// literals
 			if (!strcmp(stoken, "null")) {
 				return (token_t){.type = kNull};
@@ -92,7 +95,14 @@ token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
 			return (token_t){.type = kPCall, .str = stoken + 1};
 		}
 	}
-	// TODO: resolve other
+	{  // typed identifier and typed function call
+		if (!regexec(&t->reg_tid, stoken, 0, NULL, 0)) {
+			return (token_t){.type = kTId, .str = stoken};
+		}
+		if (*stoken == '.' && !regexec(&t->reg_tid, stoken + 1, 0, NULL, 0)) {
+			return (token_t){.type = kTCall, .str = stoken + 1};
+		}
+	}
 	return (token_t){.type = kSunc, .str = stoken};
 }
 

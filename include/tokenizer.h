@@ -8,6 +8,7 @@ typedef enum {
 	kHalt,	// halt (break/return)
 	kOnce,	// once (if)
 	kPass,	// pass (elif)
+	kType,	// struct syntax sugar (type)
 
 	kNull,	// null (read/write 0)
 	kTrue,	// true (read -1)

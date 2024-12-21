@@ -8,4 +8,5 @@ const char* scan_error(scn_err_t err) {
 		case kScnOk:
 			return "OK";
 	}
+	return "Unknown error";
 }

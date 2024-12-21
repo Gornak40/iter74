@@ -41,6 +41,8 @@ typedef struct {
 
 void debug_token(const token_t* t, const char* s);
 
+#define TOKENIZER_INI_CAP 2
+
 typedef struct {
 	token_t* v_tok;
 	regex_t reg_id;

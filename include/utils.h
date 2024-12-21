@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdalign.h>
 #include <stdlib.h>
 
 #define FAIL(msg)           \
@@ -15,28 +16,32 @@ typedef struct {
 	int cap;
 } _vec_meta_t;
 
-#define _vec_meta(v) ((_vec_meta_t*)(void*)(v)-1)
+#define _vec_msz(v) \
+	(sizeof(_vec_meta_t) >= alignof(*v) ? sizeof(_vec_meta_t) : alignof(*v))
+
+#define _vec_meta(v) ((_vec_meta_t*)((char*)(void*)(v)-_vec_msz(v)))
 
 #define vec_len(v) (_vec_meta(v)->len)
 
-#define vec_new(vp, n)                                                        \
-	do {                                                                      \
-		_vec_meta_t* vm = malloc(sizeof(**(vp)) * (n) + sizeof(_vec_meta_t)); \
-		vm->cap = n;                                                          \
-		*(vp) = (void*)(vm + 1);                                              \
+#define vec_new(vp, n)                                        \
+	do {                                                      \
+		int vms = _vec_msz(*vp);                              \
+		_vec_meta_t* vm = malloc(sizeof(**(vp)) * (n) + vms); \
+		*vm = (_vec_meta_t){.len = 0, .cap = n};              \
+		*(vp) = (void*)((char*)(void*)vm + vms);              \
 	} while (0)
 
 #define vec_free(v) free(_vec_meta(v))
 
 #define vec_pop(v) (_vec_meta(v)->len--)
 
-#define vec_push(vp, el)                                                              \
-	do {                                                                              \
-		_vec_meta_t* vm = _vec_meta(*(vp));                                           \
-		if (vm->len == vm->cap) {                                                     \
-			*(vp) =                                                                   \
-				(void*)((_vec_meta_t*)realloc(vm, (vm->cap <<= 1) * sizeof(**(vp))) + \
-						1);                                                           \
-		}                                                                             \
-		(*(vp))[_vec_meta(*(vp))->len++] = (el);                                      \
+#define vec_push(vp, el)                                                                 \
+	do {                                                                                 \
+		int vms = _vec_msz(*vp);                                                         \
+		_vec_meta_t* vm = _vec_meta(*(vp));                                              \
+		if (vm->len == vm->cap) {                                                        \
+			*(vp) = (void*)((char*)realloc(vm, (vm->cap <<= 1) * sizeof(**(vp)) + vms) + \
+							vms);                                                        \
+		}                                                                                \
+		(*(vp))[_vec_meta(*(vp))->len++] = (el);                                         \
 	} while (0)

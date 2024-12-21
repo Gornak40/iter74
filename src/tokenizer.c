@@ -109,7 +109,7 @@ token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
 
 tokenizer_t* tokenizer_new() {
 	tokenizer_t* t = malloc(sizeof(*t));
-	vec_new(&t->v_tok, 4);
+	vec_new(&t->v_tok, TOKENIZER_INI_CAP);
 	if (regcomp(&t->reg_id, "^[a-z][a-zA-Z0-9]*$", REG_EXTENDED | REG_NOSUB)) {
 		FAIL("Invalid id regex in tokenizer");
 	}

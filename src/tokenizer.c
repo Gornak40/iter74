@@ -109,9 +109,7 @@ token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
 
 tokenizer_t* tokenizer_new() {
 	tokenizer_t* t = malloc(sizeof(*t));
-	t->len = 0;
-	t->cap = 4;
-	t->tokens = malloc(t->cap * sizeof(*t->tokens));
+	vec_new(&t->v_tok, 4);
 	if (regcomp(&t->reg_id, "^[a-z][a-zA-Z0-9]*$", REG_EXTENDED | REG_NOSUB)) {
 		FAIL("Invalid id regex in tokenizer");
 	}
@@ -136,10 +134,7 @@ void tokenizer_feed(tokenizer_t* t, const char* source) {
 			char* tok = strndup(itl, itr - itl);
 			token_t token = tokenizer_token(t, tok);
 			token.b_off = itl - source;
-			if (t->len == t->cap) {
-				t->tokens = realloc(t->tokens, (t->cap <<= 1) * sizeof(*t->tokens));
-			}
-			t->tokens[t->len++] = token;
+			vec_push(&t->v_tok, token);
 			debug_token(&token, tok);
 			free(tok);
 		}
@@ -151,7 +146,7 @@ void tokenizer_feed(tokenizer_t* t, const char* source) {
 }
 
 void tokenizer_free(tokenizer_t* t) {
-	for (token_t* it = t->tokens; it != t->tokens + t->len; ++it) {
+	for (token_t* it = t->v_tok; it != t->v_tok + vec_len(t->v_tok); ++it) {
 		switch (it->type) {
 			case kId:
 			case kPId:
@@ -166,7 +161,7 @@ void tokenizer_free(tokenizer_t* t) {
 				break;
 		}
 	}
-	free(t->tokens);
+	vec_free(t->v_tok);
 	regfree(&t->reg_id);
 	regfree(&t->reg_pid);
 	regfree(&t->reg_tid);

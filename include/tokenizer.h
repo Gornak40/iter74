@@ -42,9 +42,7 @@ typedef struct {
 void debug_token(const token_t* t, const char* s);
 
 typedef struct {
-	int len;
-	int cap;
-	token_t* tokens;
+	token_t* v_tok;
 	regex_t reg_id;
 	regex_t reg_pid;
 	regex_t reg_tid;

@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	tokenizer_t* t = tokenizer_new();
 	tokenizer_feed(t, source);
 
-	scn_err_t err = scan_tokens(t->tokens, t->len);
+	scn_err_t err = scan_tokens(t->v_tok);
 	if (err) {
 		fprintf(stderr, "Scan failed: %s\n", scan_error(err));
 		return EXIT_FAILURE;

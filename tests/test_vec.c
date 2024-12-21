@@ -84,4 +84,24 @@ int main() {
 		}
 		vec_free(v_g);
 	}
+
+	{
+		char *v_s;
+		vec_new(&v_s, 1);
+		vec_push(&v_s, 'a');
+		vec_push(&v_s, 'b');
+		vec_push(&v_s, 'a');
+		vec_push(&v_s, 'c');
+		vec_push(&v_s, 'a');
+		vec_push(&v_s, 'b');
+		vec_push(&v_s, 'a');
+		vec_push(&v_s, 'x');
+		vec_pop(v_s);
+		vec_pop(v_s);
+		vec_push(&v_s, 'a');
+		vec_push(&v_s, '\0');
+
+		assert(vec_len(v_s) == 8);
+		assert(!strcmp(v_s, "abacaba"));
+	}
 }

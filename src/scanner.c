@@ -34,17 +34,18 @@ static scn_err_t scan_momentum(token_typ_t cur, scn_state_t* s) {
 	if (vec_len(s->v_st) == 0 && cur != kFunc) {
 		return kScnOutFunc;
 	}
-	if (vec_len(s->v_st) != 0 && cur == kFunc) {
-		return kScnNestFunc;
-	}
-	scn_state_t p = (scn_state_t){.prv = s->prv, .allow = s->allow};
 	s->prv = cur;
 	s->allow = kMaskAll;
 	switch (cur) {
 		case kFunc:	 // TODO: fix nested
-			vec_push(&s->v_st, cur);
-			s->allow = kMaskVar;
-			s->prom_err = kScnNoVar;
+			if (vec_len(s->v_st) == 0) {
+				vec_push(&s->v_st, cur);
+				s->allow = kMaskVar;
+				s->prom_err = kScnNoVar;
+			} else {
+				s->allow = (1 << kSet);
+				s->prom_err = kScnNestFunc;
+			}
 			break;
 		case kStop:
 			vec_pop(s->v_st);
@@ -59,6 +60,11 @@ static scn_err_t scan_momentum(token_typ_t cur, scn_state_t* s) {
 			if (vec_len(s->v_st) == 0 || s->v_st[vec_len(s->v_st) - 1] != kOnce) {
 				return kScnBadPass;
 			}
+			s->allow = kMaskExpr;
+			s->prom_err = kScnNoExpr;
+			break;
+		case kSet:
+		case kStore:
 			s->allow = kMaskExpr;
 			s->prom_err = kScnNoExpr;
 			break;

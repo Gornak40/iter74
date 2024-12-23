@@ -23,12 +23,30 @@ int main() {
 		assert(run(s) == kScnOk);
 	}
 	{
-		const char* s = "func a b stop stop";
-		assert(run(s) == kScnOutFunc);
+		const char* s =
+			"func gcd a b\n"
+			"iter b\n"
+			"a = \% a b\n"
+			"a = ^ a b\n"
+			"b = ^ a b\n"
+			"a = ^ a b\n"
+			"stop\n"
+			"func = a\n"
+			"stop\n"
+			"func main\n"
+			".post .gcd .read .read\n"
+			"stop\n";
+		assert(run(s) == kScnOk);
 	}
+
 	{
 		const char* s = "func a b";
 		assert(run(s) == kScnPosBal);
+	}
+
+	{
+		const char* s = "func a b stop stop";
+		assert(run(s) == kScnOutFunc);
 	}
 	{
 		const char* s = "iter true .read stop";
@@ -38,10 +56,12 @@ int main() {
 		const char* s = "=";
 		assert(run(s) == kScnOutFunc);
 	}
+
 	{
 		const char* s = "func a b func c d stop stop";
 		assert(run(s) == kScnNestFunc);
 	}
+
 	{
 		const char* s =
 			"func main\n"
@@ -54,6 +74,7 @@ int main() {
 			"stop\n";
 		assert(run(s) == kScnBadPass);
 	}
+
 	{
 		const char* s =
 			"func main\n"
@@ -78,6 +99,27 @@ int main() {
 			"stop\n";
 		assert(run(s) == kScnNoExpr);
 	}
+	{
+		const char* s =
+			"func main\n"
+			"c = iter true\n"
+			"stop\n"
+			"stop\n";
+		assert(run(s) == kScnNoExpr);
+	}
+	{
+		const char* s =
+			"func main\n"
+			"C <- func a\n"
+			"stop\n"
+			"stop\n";
+		assert(run(s) == kScnNoExpr);
+	}
+	{
+		const char* s = "func main func = once true null stop stop";
+		assert(run(s) == kScnNoExpr);
+	}
+
 	{
 		const char* s = "func .main stop";
 		assert(run(s) == kScnNoVar);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdalign.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #define FAIL(msg)           \
@@ -8,6 +9,8 @@
 		perror(msg);        \
 		exit(EXIT_FAILURE); \
 	} while (0);
+
+#define DBG(msg, ...) fprintf(stderr, "[DBG] " msg, __VA_ARGS__)
 
 char* read_file(const char* path);
 

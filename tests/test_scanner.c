@@ -2,6 +2,7 @@
 
 #include "scanner.h"
 #include "tokenizer.h"
+#include "utils.h"
 
 static scn_err_t run(const char* s) {
 	tokenizer_t* t = tokenizer_new();
@@ -16,10 +17,15 @@ int main() {
 		const char* s = "func a b stop";
 		assert(run(s) == kScnOk);
 	}
-	/*
+	{
+		const char* s =
+			"func a b stop\n"
+			"func c d stop\n";
+		assert(run(s) == kScnOk);
+	}
 	{
 		const char* s = "func a b stop stop";
-		assert(run(s) == kScnNegBal);
+		assert(run(s) == kScnOutFunc);
 	}
 	{
 		const char* s = "func a b";
@@ -45,5 +51,4 @@ int main() {
 			"stop\n";
 		assert(run(s) == kScnBadPass);
 	}
-	*/
 }

@@ -15,8 +15,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(${PROJECT_NAME} ${SRC_FILES} ${MAIN_SRC})
 
-target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined,leak -g -O1)
-target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined,leak)
+add_compile_options(-fsanitize=address,undefined,leak -g -O1)
+add_link_options(-fsanitize=address,undefined,leak)
 
 enable_testing()
 

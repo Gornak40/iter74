@@ -164,5 +164,6 @@ int main() {
 			{.a = 'y', .b = 'b', .c = 'z'}, {.a = 'y', .b = 'b', .c = 'z'},
 		};
 		assert(!memcmp(v_m, ex, sizeof(ex)));
+		vec_free(v_m);
 	}
 }

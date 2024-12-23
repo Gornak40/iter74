@@ -9,11 +9,10 @@
 #include "utils.h"
 
 void debug_token(const token_t* t, const char* s) {
-	fprintf(stderr, "DBG(token): %s (%d:%d) [%d]:", s, t->b_off,
-			t->b_off + (int)strlen(s), t->type);
 	switch (t->type) {
 		case kNum:
-			fprintf(stderr, " %lld\n", t->num);
+			DBG("token: %s (%d:%d) [%d] %lld\n", s, t->b_off, t->b_off + (int)strlen(s),
+				t->type, t->num);
 			break;
 		case kId:
 		case kPId:
@@ -22,10 +21,12 @@ void debug_token(const token_t* t, const char* s) {
 		case kPCall:
 		case kTCall:
 		case kSunc:
-			fprintf(stderr, " %s\n", t->str);
+			DBG("token: %s (%d:%d) [%d] %s\n", s, t->b_off, t->b_off + (int)strlen(s),
+				t->type, t->str);
 			break;
 		default:
-			putc('\n', stderr);
+			DBG("token: %s (%d:%d) [%d]\n", s, t->b_off, t->b_off + (int)strlen(s),
+				t->type);
 			break;
 	}
 }

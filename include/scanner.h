@@ -4,9 +4,8 @@
 
 typedef enum {
 	kScnOk,		   // no errors
-	kScnNegBal,	   // negative balance
 	kScnPosBal,	   // positive balance
-	kScnOutFunc,   // outside func
+	kScnOutFunc,   // outside func (negative balance)
 	kScnNestFunc,  // nested func
 	kScnBadPass,   // pass without once
 } scn_err_t;

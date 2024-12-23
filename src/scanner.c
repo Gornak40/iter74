@@ -7,16 +7,18 @@
 #include "utils.h"
 
 typedef struct {
-	token_typ_t* v_st;
-	token_typ_t prv;
-	int func_cnt;
+	token_typ_t* v_st;	 // global balance stack
+	token_typ_t prv;	 // previous token type
+	token_mask_t allow;	 // allowed token types mask
+	scn_err_t prom_err;	 // error if token type is not allowed
 } scn_state_t;
 
 scn_state_t* scn_state_new() {
 	scn_state_t* s = malloc(sizeof(*s));
 	vec_new(&s->v_st, 1);
 	s->prv = -1;
-	s->func_cnt = 0;
+	s->allow = 1 << kFunc;
+	s->prom_err = kScnOutFunc;
 	return s;
 }
 
@@ -26,35 +28,39 @@ void scn_state_free(scn_state_t* s) {
 }
 
 static scn_err_t scan_momentum(token_typ_t cur, scn_state_t* s) {
-	if (!s->func_cnt && cur != kFunc) {
+	if ((s->allow & (1 << cur)) == 0) {
+		return s->prom_err;
+	}
+	if (vec_len(s->v_st) == 0 && cur != kFunc) {
 		return kScnOutFunc;
 	}
-	if (s->func_cnt && cur == kFunc) {
+	if (vec_len(s->v_st) != 0 && cur == kFunc) {
 		return kScnNestFunc;
 	}
-	token_typ_t old = s->prv;
+	scn_state_t p = (scn_state_t){.prv = s->prv, .allow = s->allow};
 	s->prv = cur;
+	s->allow = kMaskAll;
 	switch (cur) {
 		case kFunc:	 // TODO: fix nested
-			s->func_cnt++;
 			vec_push(&s->v_st, cur);
+			s->allow = kMaskVar;
+			s->prom_err = kScnNoVar;
 			break;
 		case kStop:
-			if (s->v_st[vec_len(s->v_st) - 1] == kFunc) {
-				s->func_cnt--;
-			}
 			vec_pop(s->v_st);
 			break;
 		case kIter:
-			vec_push(&s->v_st, cur);
-			break;
 		case kOnce:
 			vec_push(&s->v_st, cur);
+			s->allow = kMaskExpr;
+			s->prom_err = kScnNoExpr;
 			break;
 		case kPass:
 			if (vec_len(s->v_st) == 0 || s->v_st[vec_len(s->v_st) - 1] != kOnce) {
 				return kScnBadPass;
 			}
+			s->allow = kMaskExpr;
+			s->prom_err = kScnNoExpr;
 			break;
 		default:  // TODO: better checks
 			break;
@@ -92,6 +98,10 @@ const char* scan_error(scn_err_t err) {
 			return "Nested func declaration";
 		case kScnBadPass:
 			return "Pass not paired with once";
+		case kScnNoExpr:
+			return "Expected expression";
+		case kScnNoVar:
+			return "Expected variable parameter";
 	}
 	return "Unknown error";
 }

@@ -8,6 +8,8 @@ typedef enum {
 	kScnOutFunc,   // outside func (negative balance)
 	kScnNestFunc,  // nested func
 	kScnBadPass,   // pass without once
+	kScnNoExpr,	   // expected expression
+	kScnNoVar,	   // expected variable
 } scn_err_t;
 
 scn_err_t scan_tokens(const token_t* v_tok);

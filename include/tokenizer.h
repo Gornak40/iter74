@@ -1,6 +1,7 @@
 #pragma once
 
 #include <regex.h>
+#include <stdint.h>
 
 typedef enum {
 	kFunc,	// func (function declaration)
@@ -29,6 +30,14 @@ typedef enum {
 
 	kSunc,	// any other token
 } token_typ_t;
+
+typedef uint64_t token_mask_t;
+
+static const token_mask_t kMaskAll = -1;
+static const token_mask_t kMaskExpr =
+	(1 << kNull) | (1 << kTrue) | (1 << kNum) | (1 << kId) | (1 << kPId) | (1 << kTId) |
+	(1 << kCall) | (1 << kPCall) | (1 << kTCall) | (1 << kSunc);
+static const token_mask_t kMaskVar = (1 << kId) | (1 << kPId) | (1 << kTId);
 
 typedef struct {
 	token_typ_t type;

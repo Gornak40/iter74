@@ -2,7 +2,6 @@
 
 #include "scanner.h"
 #include "tokenizer.h"
-#include "utils.h"
 
 static scn_err_t run(const char* s) {
 	tokenizer_t* t = tokenizer_new();
@@ -36,6 +35,10 @@ int main() {
 		assert(run(s) == kScnOutFunc);
 	}
 	{
+		const char* s = "=";
+		assert(run(s) == kScnOutFunc);
+	}
+	{
 		const char* s = "func a b func c d stop stop";
 		assert(run(s) == kScnNestFunc);
 	}
@@ -50,5 +53,45 @@ int main() {
 			"stop\n"
 			"stop\n";
 		assert(run(s) == kScnBadPass);
+	}
+	{
+		const char* s =
+			"func main\n"
+			"once =\n"
+			"stop\n";
+		assert(run(s) == kScnNoExpr);
+	}
+	{
+		const char* s =
+			"func main\n"
+			"iter <-\n"
+			"stop\n";
+		assert(run(s) == kScnNoExpr);
+	}
+	{
+		const char* s =
+			"func main\n"
+			"iter true\n"
+			"once null\n"
+			"pass halt\n"
+			"stop\n"
+			"stop\n";
+		assert(run(s) == kScnNoExpr);
+	}
+	{
+		const char* s = "func .main stop";
+		assert(run(s) == kScnNoVar);
+	}
+	{
+		const char* s = "func halt a stop";
+		assert(run(s) == kScnNoVar);
+	}
+	{
+		const char* s = "func = B stop";
+		assert(run(s) == kScnNoVar);
+	}
+	{
+		const char* s = "func + a b stop";
+		assert(run(s) == kScnNoVar);
 	}
 }

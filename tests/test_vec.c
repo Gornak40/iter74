@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <memory.h>
+#include <string.h>
 
 #include "utils.h"
 
@@ -134,5 +135,34 @@ int main() {
 			assert(v_b[i].c == ex[i].c && v_b[i].x == ex[i].x);
 		}
 		vec_free(v_b);
+	}
+
+	{
+		typedef struct {
+			char a;
+			char b;
+			char c;
+		} monkey_t;
+
+		monkey_t *v_m;
+		vec_new(&v_m, 2);
+		monkey_t m = (monkey_t){.a = 'a', .b = 'b', .c = 'c'};
+		vec_push(&v_m, m);
+		vec_push(&v_m, m);
+		m.c = 'z';
+		vec_push(&v_m, m);
+		vec_push(&v_m, m);
+		m.a = 'y';
+		vec_push(&v_m, m);
+		vec_push(&v_m, m);
+		v_m[3] = (monkey_t){.a = 't', .b = 't', .c = 't'};
+
+		assert(vec_len(v_m) == 6);
+		const monkey_t ex[] = {
+			{.a = 'a', .b = 'b', .c = 'c'}, {.a = 'a', .b = 'b', .c = 'c'},
+			{.a = 'a', .b = 'b', .c = 'z'}, {.a = 't', .b = 't', .c = 't'},
+			{.a = 'y', .b = 'b', .c = 'z'}, {.a = 'y', .b = 'b', .c = 'z'},
+		};
+		assert(!memcmp(v_m, ex, sizeof(ex)));
 	}
 }

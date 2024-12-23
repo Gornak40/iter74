@@ -17,7 +17,7 @@ typedef struct {
 } _vec_meta_t;
 
 #define _vec_msz(v) \
-	(sizeof(_vec_meta_t) >= _Alignof(*v) ? sizeof(_vec_meta_t) : _Alignof(*v))
+	(sizeof(_vec_meta_t) >= _Alignof(*(v)) ? sizeof(_vec_meta_t) : _Alignof(*(v)))
 
 #define _vec_meta(v) ((_vec_meta_t*)((char*)(void*)(v)-_vec_msz(v)))
 

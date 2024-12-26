@@ -1,56 +1,56 @@
 func gcd a b
 	iter b
-		a = % a b
-		a = ^ a b
-		b = ^ a b
-		a = ^ a b
+		a= % a b
+		a= ^ a b
+		b= ^ a b
+		a= ^ a b
 	stop
-	func = a
+	func= a
 stop
 
 
 func iota A n ini
-	E = + A n
+	E= + A n
 	iter != A E
-		A <- ini
-		A = ++ A
-		ini = ++ ini
+		A<- ini
+		A= ++ A
+		ini= ++ ini
 	stop
 stop
 
 
 func accumulate A n
-	sum = null
-	E = + A n
+	sum= null
+	E= + A n
 	iter != A E
-		sum = + sum [] A
-		A = ++ A
+		sum= + sum [] A
+		A= ++ A
 	stop
-	func = sum
+	func= sum
 stop
 
 
 func max_element A n
-	max = -0x8000000000000000
-	E = + A n
+	max= -0x8000000000000000
+	E= + A n
 	iter != A E
 		once < max [] A
-			max = [] A
+			max= [] A
 		stop
 	stop
-	func = max
+	func= max
 stop
 
 
 func AFill n x
-	A = .Heap n
-	i = null
+	A= .Heap n
+	i= null
 	iter < i n
-		I = + A i
-		I <- x
-		i = ++ i
+		I= + A i
+		I<- x
+		i= ++ i
 	stop
-	func = A
+	func= A
 stop
 
 
@@ -60,54 +60,54 @@ stop
 
 
 func Ipair_New x y
-	Ipair_R = .Heap 2
-	X = Ipair@x Ipair_R
-	Y = Ipair@y Ipair_R
-	X <- x
-	Y <- y
-	func = Ipair_R
+	Ipair_R= .Heap 2
+	X= Ipair@x Ipair_R
+	Y= Ipair@y Ipair_R
+	X<- x
+	Y<- y
+	func= Ipair_R
 stop
 
 
 func sumIpair Ipair_P
-	func = + Ipair:x Ipair_P Ipair:y Ipair_P
+	func= + Ipair:x Ipair_P Ipair:y Ipair_P
 stop
 
 
 func binPow a n m
 	once ! n
-		func = 1
+		func= 1
 		halt true
 	stop
-	b = .binPow a >> n 1 m
-	b = % * b b m
+	b= .binPow a >> n 1 m
+	b= % * b b m
 	once & 1 n
-		b = % * b a m
+		b= % * b a m
 	stop
-	func = b
+	func= b
 stop
 
 
 func Erat n
-	A = .Afill ++ n 1
-	A <- null
-	I = ++ A
-	I <- null
-	i = 2
+	A= .Afill ++ n 1
+	A<- null
+	I= ++ A
+	I<- null
+	i= 2
 	iter <= * i i n
-		I = + A i
+		I= + A i
 		once ! [] I
 		pass true
-			j = * i i
+			j= * i i
 			iter <= j n
-				I = + A j
-				I <- null
-				j = + j i
+				I= + A j
+				I<- null
+				j= + j i
 			stop
 		stop
-		i = ++ i
+		i= ++ i
 	stop
-	func = A
+	func= A
 stop
 
 

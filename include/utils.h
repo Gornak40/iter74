@@ -10,7 +10,7 @@
 		exit(EXIT_FAILURE); \
 	} while (0);
 
-#define DBG(msg, ...) fprintf(stderr, "[DBG] " msg, __VA_ARGS__)
+#define DBG(msg, ...) fprintf(stderr, "[DBG] " msg "\n", __VA_ARGS__)
 
 char* read_file(const char* path);
 

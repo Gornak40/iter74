@@ -11,38 +11,32 @@
 void debug_token(const token_t* t, const char* s) {
 	switch (t->type) {
 		case kNum:
-			DBG("token: %s (%d:%d) [%d] %lld\n", s, t->b_off, t->b_off + (int)strlen(s),
+			DBG("token: %s (%d:%d) [%d] %lld", s, t->b_off, t->b_off + (int)strlen(s),
 				t->type, t->num);
 			break;
 		case kId:
 		case kPId:
 		case kTId:
+		case kSetId:
+		case kSetPId:
+		case kSetTId:
 		case kCall:
 		case kPCall:
 		case kTCall:
 		case kSunc:
-			DBG("token: %s (%d:%d) [%d] %s\n", s, t->b_off, t->b_off + (int)strlen(s),
+			DBG("token: %s (%d:%d) [%d] %s", s, t->b_off, t->b_off + (int)strlen(s),
 				t->type, t->str);
 			break;
 		default:
-			DBG("token: %s (%d:%d) [%d]\n", s, t->b_off, t->b_off + (int)strlen(s),
+			DBG("token: %s (%d:%d) [%d]", s, t->b_off, t->b_off + (int)strlen(s),
 				t->type);
 			break;
 	}
 }
 
 token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
-	switch (strlen(stoken)) {  // perfomance trick
-		case 1:
-			// operators
-			if (!strcmp(stoken, "=")) {
-				return (token_t){.type = kSet};
-			}
-		case 2:
-			// operators
-			if (!strcmp(stoken, "<-")) {
-				return (token_t){.type = kStore};
-			}
+	int slen = strlen(stoken);
+	switch (slen) {	 // perfomance trick
 		case 4:
 			// keywords
 			if (!strcmp(stoken, "func")) {
@@ -72,6 +66,14 @@ token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
 			}
 			if (!strcmp(stoken, "true")) {
 				return (token_t){.type = kTrue};
+			}
+		case 5:
+			// set expressions
+			if (!strcmp(stoken, "null=")) {
+				return (token_t){.type = kSetNull};
+			}
+			if (!strcmp(stoken, "func=")) {
+				return (token_t){.type = kSetFunc};
 			}
 	}
 	{  // number constant
@@ -104,6 +106,28 @@ token_t tokenizer_token(tokenizer_t* t, const char* stoken) {
 		if (*stoken == '.' && !regexec(&t->reg_tid, stoken + 1, 0, NULL, 0)) {
 			return (token_t){.type = kTCall, .str = strdup(stoken + 1)};
 		}
+	}
+	// set expressions
+	if (slen > 1 && stoken[slen - 1] == '=') {
+		char* stok1 = strndup(stoken, slen - 1);
+		if (!regexec(&t->reg_id, stok1, 0, NULL, 0)) {
+			return (token_t){.type = kSetId, .str = stok1};
+		}
+		if (!regexec(&t->reg_pid, stok1, 0, NULL, 0)) {
+			return (token_t){.type = kSetPId, .str = stok1};
+		}
+		if (!regexec(&t->reg_tid, stok1, 0, NULL, 0)) {
+			return (token_t){.type = kSetTId, .str = stok1};
+		}
+		free(stok1);
+	}
+	// store expressions
+	if (slen > 2 && !strcmp(stoken + slen - 2, "<-")) {
+		char* stok1 = strndup(stoken, slen - 2);
+		if (!regexec(&t->reg_pid, stok1, 0, NULL, 0)) {
+			return (token_t){.type = kStorePId, .str = stok1};
+		}
+		free(stok1);
 	}
 	return (token_t){.type = kSunc, .str = strdup(stoken)};
 }
@@ -148,18 +172,8 @@ void tokenizer_feed(tokenizer_t* t, const char* source) {
 
 void tokenizer_free(tokenizer_t* t) {
 	for (token_t* it = t->v_tok; it != t->v_tok + vec_len(t->v_tok); ++it) {
-		switch (it->type) {
-			case kId:
-			case kPId:
-			case kTId:
-			case kCall:
-			case kPCall:
-			case kTCall:
-			case kSunc:
-				free(it->str);
-				break;
-			default:
-				break;
+		if (kMaskStrP & (1 << it->type)) {
+			free(it->str);
 		}
 	}
 	vec_free(t->v_tok);

@@ -15,14 +15,19 @@ typedef enum {
 	kNull,	// null (read/write 0)
 	kTrue,	// true (read -1)
 
-	kSet,	 // =
-	kStore,	 // <-
-
 	kNum,  // integer constant (228)
 
 	kId,   // identifier (var)
 	kPId,  // pointer identifier (Var)
 	kTId,  // typed itentifier (type_Var)
+
+	kSetId,	   // a=
+	kSetPId,   // A=
+	kSetTId,   // T_A=
+	kSetNull,  // null=
+	kSetFunc,  // func=
+
+	kStorePId,	// A<-
 
 	kCall,	 // function call (.function)
 	kPCall,	 // pointer function call (.Function)
@@ -34,10 +39,27 @@ typedef enum {
 typedef uint64_t token_mask_t;
 
 static const token_mask_t kMaskAll = -1;
-static const token_mask_t kMaskExpr =
-	(1 << kNull) | (1 << kTrue) | (1 << kNum) | (1 << kId) | (1 << kPId) | (1 << kTId) |
-	(1 << kCall) | (1 << kPCall) | (1 << kTCall) | (1 << kSunc);
+
+static const token_mask_t kMaskIdExpr =
+	(1 << kNull) | (1 << kTrue) | (1 << kNum) | (1 << kId) | (1 << kCall) | (1 << kSunc);
+
+static const token_mask_t kMaskPIdExpr =
+	(1 << kNull) | (1 << kPId) | (1 << kPCall) | (1 << kSunc);
+
+static const token_mask_t kMaskTIdExpr =
+	(1 << kNull) | (1 << kTId) | (1 << kTCall) | (1 << kSunc);
+
+static const token_mask_t kMaskExpr = kMaskIdExpr | kMaskPIdExpr | kMaskTIdExpr;
+
 static const token_mask_t kMaskVar = (1 << kId) | (1 << kPId) | (1 << kTId);
+
+static const token_mask_t kMaskCall = (1 << kCall) | (1 << kPCall) | (1 << kTCall);
+
+static const token_mask_t kMaskConst = (1 << kNull) | (1 << kTrue) | (1 << kNum);
+
+static const token_mask_t kMaskStrP = kMaskVar | kMaskCall | (1 << kSunc) |
+									  (1 << kSetId) | (1 << kSetPId) | (1 << kSetTId) |
+									  (1 << kStorePId);
 
 typedef struct {
 	token_typ_t type;

@@ -26,12 +26,12 @@ int main() {
 		const char* s =
 			"func gcd a b\n"
 			"iter b\n"
-			"a = \% a b\n"
-			"a = ^ a b\n"
-			"b = ^ a b\n"
-			"a = ^ a b\n"
+			"a= \% a b\n"
+			"a= ^ a b\n"
+			"b= ^ a b\n"
+			"a= ^ a b\n"
 			"stop\n"
-			"func = a\n"
+			"func= a\n"
 			"stop\n"
 			"func main\n"
 			".post .gcd .read .read\n"
@@ -78,14 +78,14 @@ int main() {
 	{
 		const char* s =
 			"func main\n"
-			"once =\n"
+			"once a=\n"
 			"stop\n";
 		assert(run(s) == kScnNoExpr);
 	}
 	{
 		const char* s =
 			"func main\n"
-			"iter <-\n"
+			"iter A<-\n"
 			"stop\n";
 		assert(run(s) == kScnNoExpr);
 	}
@@ -102,21 +102,21 @@ int main() {
 	{
 		const char* s =
 			"func main\n"
-			"c = iter true\n"
+			"c= iter true\n"
 			"stop\n"
 			"stop\n";
-		assert(run(s) == kScnNoExpr);
+		assert(run(s) == kScnNoIdExpr);
 	}
 	{
 		const char* s =
 			"func main\n"
-			"C <- func a\n"
+			"C<- func a\n"
 			"stop\n"
 			"stop\n";
 		assert(run(s) == kScnNoExpr);
 	}
 	{
-		const char* s = "func main func = once true null stop stop";
+		const char* s = "func main func= once true null stop stop";
 		assert(run(s) == kScnNoExpr);
 	}
 
@@ -135,5 +135,19 @@ int main() {
 	{
 		const char* s = "func + a b stop";
 		assert(run(s) == kScnNoVar);
+	}
+
+	{
+		const char* s =
+			"func main\n"
+			"iter true\n"
+			"once & .read 1\n"
+			"halt ++ 1\n"
+			"pass true\n"
+			".post 11\n"
+			"stop\n"
+			"stop\n"
+			"stop\n";
+		assert(run(s) == kScnNoConst);
 	}
 }

@@ -1,0 +1,33 @@
+#include "macro.sunc"
+
+sunc [] A
+	A
+	`ld a0, 0(a0)`
+stop
+
+sunc + A i
+    A
+    .push
+    i
+    .i2ptr
+    .pop1
+    `add a0, a1, a0`
+stop
+
+sunc + i A
+    i
+    .i2ptr
+    .push
+    A
+    .pop1
+    `add a0, a0, a1`
+stop
+
+sunc - A B
+    A
+    .push
+    B
+    .pop1
+    `sub a0, a1, a0`
+    .ptr2i
+stop

@@ -1,0 +1,16 @@
+#define .push `addi rs, rs, -8` \
+	`sd a0, 0(rs)`
+
+#define .pop1 `ld a1, 0(rs)` \
+	`addi rs, rs, 8`
+
+#define .true `li a0, -1`
+
+#define .i2ptr `slli a0, a0, 3`
+
+#define .ptr2i `srai a0, a0, 3`
+
+#define .cb2b `addi a0, a0, -1`
+
+#define .bool `seqz a0, a0` \
+	.cb2b
